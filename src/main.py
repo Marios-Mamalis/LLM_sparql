@@ -66,20 +66,20 @@ def chatqa(query: str, model: str) -> str:
     return res
 
 
-def reply_over_a_dataset(question: str, refresh_datasets_chroma: bool = False) -> str:
+def reply_over_a_dataset(question: str,  chroma_directory: str = 'data/datasets_chroma', refresh_datasets_chroma: bool = False) -> str:
     """
     Given a user's question that can be answered through API-accessible information, this function uses an LLM to
     construct and execute API queries to the endpoint, retrieving and presenting the relevant details back to the user.
 
     :param question: The user's question.
     :param refresh_datasets_chroma: Whether the chroma store containing information about the datasets should be
-    refreshed (true) or not (False).
+    refreshed (True) or not (False).
+    :param chroma_directory: The path to the ChromaDB directory.
     :return: The model's response.
     """
 
     # setup dataset chroma store
     embedding = OpenAIEmbeddings()
-    chroma_directory = 'data/datasets_chroma'
     if not os.path.exists(chroma_directory) or refresh_datasets_chroma:
         store_dataset_information_to_chroma_db(chroma_path=chroma_directory, embedding=embedding)
     ds_vectordb = Chroma(persist_directory=chroma_directory, embedding_function=embedding)
